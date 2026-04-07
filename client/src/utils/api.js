@@ -1,19 +1,22 @@
-export const getApiBase = () => {
-  return import.meta.env.VITE_API_URL || "http://localhost:5000";
-};
+export const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
-export const getAiBase = () => {
-  return import.meta.env.VITE_AI_URL || "http://localhost:8000";
-};
+const getToken = () => localStorage.getItem("token");
 
-export const fetchWithAuth = (url, options = {}) => {
-  const token = localStorage.getItem("token");
-  return fetch(url, {
+export const apiRequest = async (path, options = {}) => {
+  const token = getToken();
+  const response = await fetch(`${API_BASE}${path}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",
       ...(options.headers || {}),
-      Authorization: `Bearer ${token}`
+      ...(token ? { Authorization: `Bearer ${token}` } : {})
     }
   });
+
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(data.message || "Request failed");
+  }
+
+  return data;
 };

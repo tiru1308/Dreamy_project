@@ -3,7 +3,9 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const connectDb = require("./config/db");
 const authRoutes = require("./routes/auth");
-const goalRoutes = require("./routes/goals");
+const transactionRoutes = require("./routes/transactions");
+const analyticsRoutes = require("./routes/analytics");
+const suggestionRoutes = require("./routes/suggestions");
 
 dotenv.config();
 
@@ -13,11 +15,13 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.json({ message: "AI Goal Tracker API" });
+  res.json({ message: "Expense Tracker API is running" });
 });
 
-app.use("/auth", authRoutes);
-app.use("/goals", goalRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/transactions", transactionRoutes);
+app.use("/api/analytics", analyticsRoutes);
+app.use("/api/suggestions", suggestionRoutes);
 
 const PORT = process.env.PORT || 5000;
 
